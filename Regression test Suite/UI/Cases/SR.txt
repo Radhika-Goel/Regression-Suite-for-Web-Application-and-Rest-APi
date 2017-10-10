@@ -1,0 +1,212 @@
+*** Settings ***
+Suite Setup       Common.Suite Setup for Vesper changes    cases
+Suite Teardown    Selenium2Library.Close Browser
+Library           Selenium2Library
+Library           Collections
+Library           ngcscCommonMethods
+Resource          ../../Common.robot
+
+*** Test Cases ***
+Verification of all fields with new SSRN filed in My Reported Tab Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    Selenium2Library.Click Element    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Common.Remove Colums From Cases Widget
+    ${filtered_column_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_my_reported_cases']/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]
+    ${filtered_column_text}    Common.getting elements text from allwebelements    ${filtered_column_elements}
+    Collections.List Should Contain Value    ${filtered_column_text}    Software Support Ref #
+
+Verification of all fields with new SSRN filed in All Open Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[3]
+    Selenium2Library.Click Element    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[3]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    Selenium2Library.Click Element    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Common.Remove Colums From Cases Widget
+    ${filtered_column_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_all_open_cases']/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]
+    ${filtered_column_text}    Common.getting elements text from allwebelements    ${filtered_column_elements}
+    Collections.List Should Contain Value    ${filtered_column_text}    Software Support Ref #
+
+Verification of all fields with new SSRN filed in P1 Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[4]
+    Selenium2Library.Click Element    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[4]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    Selenium2Library.Click Element    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Common.Remove Colums From Cases Widget
+    ${filtered_column_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_p1_cases']/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]
+    ${filtered_column_text}    Common.getting elements text from allwebelements    ${filtered_column_elements}
+    Collections.List Should Contain Value    ${filtered_column_text}    Software Support Ref #
+
+Verification of all fields with new SSRN filed in Customer Input Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[5]
+    Selenium2Library.Click Element    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[5]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    Selenium2Library.Click Element    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Common.Remove Colums From Cases Widget
+    ${filtered_column_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_awaiting_my_input']/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]
+    ${filtered_column_text}    Common.getting elements text from allwebelements    ${filtered_column_elements}
+    Collections.List Should Contain Value    ${filtered_column_text}    Software Support Ref #
+
+Verification of all fields with new SSRN filed in My Juniper Input Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[6]
+    Selenium2Library.Click Element    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[6]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    Selenium2Library.Click Element    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Common.Remove Colums From Cases Widget
+    ${filtered_column_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_awaiting_jnpr_input']/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]
+    ${filtered_column_text}    Common.getting elements text from allwebelements    ${filtered_column_elements}
+    Collections.List Should Contain Value    ${filtered_column_text}    Software Support Ref #
+
+Verification of all fields with new SSRN filed in Closed Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[7]
+    Selenium2Library.Click Element    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[7]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    Selenium2Library.Click Element    xpath=//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/div[1]/button[1]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Common.Remove Colums From Cases Widget
+    ${filtered_column_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_closed_cases']/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]
+    ${filtered_column_text}    Common.getting elements text from allwebelements    ${filtered_column_elements}
+    Collections.List Should Contain Value    ${filtered_column_text}    Software Support Ref #
+
+Verification of Filtering of SSRN filed in Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[3]
+    Selenium2Library.Click Element    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[3]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    xpath=//div[2]/div/button
+    Selenium2Library.Click Element    xpath=//div[2]/div/button
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //input[@id='rc-input-srId']
+    Selenium2Library.Press Key    //*[@id='rc-input-synopsis']    \\9
+    Selenium2Library.Press Key    //*[@id='rc-input-prodSeries']    \\9
+    Selenium2Library.Press Key    //*[@id='rc-input-platform']    \\9
+    Selenium2Library.Press Key    //*[@id='rc-input-custCaseNo']    \\9
+    Selenium2Library.Press Key    //*[@id='rc-input-serialNo']    \\9
+    Selenium2Library.Press Key    //*[@id='rc-input-routerName']    \\9
+    Selenium2Library.Press Key    //div[@id='rc-custom-datepickercreateDate']/div/div[2]/div/input    \\9
+    Selenium2Library.Press Key    //div[@id='rc-filter-section-lastModifiedDate']/div/div/div[2]/div/input    \\9
+    Selenium2Library.Input Text    //*[@id='rc-input-softwareSupportReferenceNumber']    152115129000
+    Selenium2Library.Press Key    //*[@id='rc-input-softwareSupportReferenceNumber']    \\13
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Comment    Selenium2Library.Click Element    //div[2]/section/div/div/label
+    Comment    BuiltIn.Sleep    5s
+    Comment    ${inner_scroll}    BuiltIn.Set Variable    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/div[2]/div[2]/section/div[2]/div[2]/div
+    Comment    Selenium2Library.Mouse Over    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/div[2]/div[2]/section/div[2]/div[2]/div
+    Comment    BuiltIn.Sleep    5s
+    Comment    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/div[2]/div[2]/section/div[2]/div[2]/div
+    Comment    BuiltIn.Sleep    5s
+    Comment    Execute Javascript    $("//div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/div[2]/div[2]/section/div[2]/div[2]/div").animate({ scrollTop: \"100px\" })");
+    Comment    BuiltIn.Sleep    5s
+    Comment    Selenium2Library.Mouse Up    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[1]/section/aside/div[2]/div[2]/section/div[2]/div[2]/div
+    Comment    BuiltIn.Sleep    5s
+    Comment    Selenium2Library.Mouse Up    //div/div/div[1]
+    Comment    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/div/div[1]/section/aside/div[2]/div[2]/section/div[2]/ul/li[16]/span[3]
+    Common.Remove Colums From Cases Widget
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/section/aside/div/div/i
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div/section/aside/div/div/i
+    BuiltIn.Sleep    5s
+    ${filtered_data}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_all_open_cases']/div[2]/div/div[1]/div[3]/div/div/div[1]/div[2]/div/div/div/div/div/div
+    ${all_columns_text}    Common.getting elements text from allwebelements    ${filtered_data}
+    ${SSRN_filtered_value}    Collections.Get From List    ${all_columns_text}    -1
+    BuiltIn.Should Be Equal As Strings    ${SSRN_filtered_value}    152115129000
+
+Verification of Sorting of SSRN field in Cases
+    [Tags]    SR
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[3]
+    Selenium2Library.Click Element    //ul[@id='nxcsc-tabbed-table-tabs-main']/li[3]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Mouse Over    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[2]/div/button[1]
+    Selenium2Library.Click Element    //div[@id='cases_tabview_cases_tabbed_table']/div/section/div/div/div[2]/div/button[1]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    //aside/nav/ul/li[2]
+    BuiltIn.Sleep    5s
+    Common.Remove Colums From Cases Widget
+    BuiltIn.Sleep    5s
+    @{all_sorting_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_all_open_cases']/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]/span[2]
+    BuiltIn.Sleep    5s
+    Selenium2Library.Click Element    @{all_sorting_elements}[-1]
+    BuiltIn.Sleep    5s
+    ${filtered_data}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_all_open_cases']/div[2]/div/div[1]/div[3]/div
+    ${all_columns_text}    Common.getting elements text from allwebelements    ${filtered_data}
+    ${total_records}    BuiltIn.Get Length    ${all_columns_text}
+    ${all_ssrn_fields}    BuiltIn.Create List
+    : FOR    ${i}    IN RANGE    ${total_records}
+    \    ${element}    Collections.Get From List    ${all_columns_text}    ${i}
+    \    ${all_fields}    String.Split String    ${element}    \n
+    \    ${ssrn_field}    Collections.Get From List    ${all_fields}    -1
+    \    Collections.Append To List    ${all_ssrn_fields}    ${ssrn_field}
+    ${first_ssrn_after_desc_sort}    Collections.Get From List    ${all_ssrn_fields}    0
+    ${second_ssrn_after_desc_sort}    Collections.Get From List    ${all_ssrn_fields}    1
+    ${value}    BuiltIn.Evaluate    ${first_ssrn_after_desc_sort} < \ ${second_ssrn_after_desc_sort}
+    BuiltIn.Should Be Equal    ${value}    ${False}
+    Comment    Selenium2Library.Click Element    @{all_sorting_elements}[-1]
+    Comment    BuiltIn.Sleep    5s
+    Comment    ${filtered_data}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_cases_ngcsc_subtab_all_open_cases']/div[2]/div/div[1]/div[3]/div
+    Comment    ${all_columns_text}    Common.getting elements text from allwebelements    ${filtered_data}
+    Comment    ${total_records}    BuiltIn.Get Length    ${all_columns_text}
+    Comment    ${all_ssrn_fields}    BuiltIn.Create List
+    Comment    :FOR    ${i}    IN RANGE    ${total_records}
+    Comment    \    ${element}    Collections.Get From List    ${all_columns_text}    ${i}
+    Comment    \    ${all_fields}    String.Split String    ${element}    \n
+    Comment    \    ${ssrn_field}    Collections.Get From List    ${all_fields}    -1
+    Comment    \    Collections.Append To List    ${all_ssrn_fields}    ${ssrn_field}
+    Comment    ${first_ssrn_after_desc_sort}    Collections.Get From List    ${all_ssrn_fields}    0
+    Comment    ${second_ssrn_after_desc_sort}    Collections.Get From List    ${all_ssrn_fields}    1
+    Comment    ${value}    BuiltIn.Evaluate    ${first_ssrn_after_desc_sort} > \ ${second_ssrn_after_desc_sort}
+    Comment    BuiltIn.Should Be Equal    ${value}    ${False}
+
+Verification of Global Search of SSRN field
+    [Tags]    SR
+    Sleep    5s
+    Selenium2Library.Input Text    //section[@id='nxcsc-global-search-container']/input    152115129000
+    Selenium2Library.Press Key    //section[@id='nxcsc-global-search-container']/input    \\13
+    Sleep    5s
+    Selenium2Library.Mouse Over    //div[@id='result-content']/section/ul/li[3]
+    Selenium2Library.Click Element    //div[@id='result-content']/section/ul/li[3]
+    Sleep    5s
+    ${total_cases_record}    Selenium2Library.Get Text    //div[@id='jnprDataTableContent_search_function_tab_cases']/div/div/div[4]/table/tbody/tr/td[2]/span[1]
+    ${splitted_string}    String.Split String    ${total_cases_record}    :
+    ${total_records}    Collections.Get From List    ${splitted_string}    -1
+    Should Be Equal As Integers    ${total_records}    3
+    ${cases_search_text}    Selenium2Library.Get Text    //section[@id='nxcsc-globalsearch-result']/div[2]/span
+    BuiltIn.Should Be Equal As Strings    ${cases_search_text}    Serial # / Software Support Ref #: 152115129000
+    ${all_cases_elements}    Selenium2Library.Get Webelements    //div[@id='jnprDataTableContent_search_function_tab_cases']/div/div/div[2]/div/div[1]/div[2]/div/div[1]/div[2]/div/div/div[2]/div[1]/span[1]
+    ${cases_field}    Common.getting elements text from allwebelements    ${all_cases_elements}
+    Collections.List Should Contain Value    ${cases_field}    Software Support Ref #

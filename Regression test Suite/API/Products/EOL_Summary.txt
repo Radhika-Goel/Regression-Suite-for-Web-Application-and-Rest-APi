@@ -1,0 +1,255 @@
+*** Settings ***
+Suite Setup       Common.Setup for Getting Random Account ID    ibases
+Library           ngcscCommonMethods
+Library           DateTime
+Library           String
+Library           BuiltIn
+Library           Collections
+Library           json
+Library           requests
+Resource          ../../Common.robot
+Resource          ../../Variables.txt
+
+*** Variables ***
+${EOL_Request}    {"pageItems":50,"paginatingForward":true,"filterModel":[{"endOfLifeDate":{"type":"13","filter":["28800000 AND 1487923199000"]}}],"firstRecord":null,"lastRecord":null,"searchBy":"user"}
+${API_TOKEN}      Authorization=Bearer eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiZGlyIn0..wdSVlh4vdkym08if.l6ih7Uq-BW08Bi3AwpsjddxFmqDNn7wMbN3MsSOTTT_ElQRUJcyfnaCCQ6Esf-xW5DU74Xq12gtBg40bsQsP9WQV58_F0HM-w-cNThryG9Ln-7ggvUqHvnEGSG8AEu3NfvGODr6H0x8saATJwjf9yqo6Tp4EBceZIljcUNB-5zw5plOuXOPpOonPPihdtWalqBqdeshA0iIiFl7PFjeXKWD4-5owMLN5JNqH6SxEe4vOwIMeHc9xpGda5h7V1xhpzpIsgkKjJX9XOPwhrN1SoxnoFNcddbKL5uMx5ArM4kcbUqgycT5pGa3SqitcDozuSunHMA7fdU2wucelqdP9HEYUTsME-Yyly_M1M8ohWxjlHuBRZd6rnM10YPPtLVn7xncuLWVoUNW5uff1ZBhq2RRsx21a_Fia7f_waSxsctdORz3724jsb4xcfyTIYEazZXn6EKGZyBbTYw8XxU6aoF2gMoeNK3QHUejLCr5hqRf4N3iFXCY908Ixiv0JpED9woCRmHPQPxn8NPy20brbjWTMmyG0wNfEOlkY8EDBRUFRuO3_YqorW0QKtrqGfRZugv4Xp4q39EtT_LdcVwhmP81VyFx6fVvKXcEiNukP_5bmXFOoDM0KmVkozN2Nh6dZ68JpWImkgFjcV5nUuSXylmiIUIx6lbfdl7QOIp97dhqcfW4RaBGbd7vuiizY2867HeZTxkQmdzkNp_NdwJQoIvAtCVGNXsJNOvZFtTqt4tpE0KvrRTLOLtyxsW5B271kvpp470ay7TF5o7yaoOzv53mq0s--P0KMxD4XJowzDRRC1_loH-WbpaXkUV9V-LaHF_mWcac9ZhP5YYzN6t_96utroqYmnq5jO9alF2CJq3LcWSKq3EpHy5drNNKm.v81bIBbBM_4GBIgJPu_Puw
+${Products_API}    api/ibase-manager/ibases
+
+*** Test Cases ***
+EOL
+    [Tags]    test
+    ${epoch_time_in_pst}    ngcscCommonMethods.epoch max time in pst
+    ${current_Date}    DateTime.Get Current Date
+    ${eol_date}    DateTime.Subtract Time From Date    ${current_Date}    7 days
+    ${eol_date}    DateTime.Convert Date    ${eol_date}    result_format=%Y%m%d%H%M    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    Comment    ${equipmentId}    Generate Random String    11    [NUMBERS]
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    pm    ${eol_date}    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    28800000    ${epoch_time_in_pst}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    28800000    ${epoch_time_in_pst}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZI000002    Installed At    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    28800000    ${epoch_time_in_pst}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    28800000    ${epoch_time_in_pst}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Not Contain Value    ${all_serial_records}    RTU0000000179571
+
+90 Days
+    [Tags]    test
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch min time in pst
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    89 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_date}
+    ${eol_date_format}    DateTime.Add Time To Date    ${current_Date}    10 days
+    ${eol_date}    DateTime.Convert Date    ${eol_date_format}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    Comment    ${equipmentId}    Generate Random String    11    [NUMBERS]
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    20s
+    ngcscCommonMethods.Send Message    pm    ${eol_date}    ${msgRcdTs}
+    BuiltIn.Sleep    20s
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    Comment    Log    Sending message with start date as Current Date
+    Comment    ${slice_start_date}    DateTime.Get Current Date
+    Comment    ${slice_start_date}    DateTime.Convert Date    ${slice_start_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    Comment    ngcscCommonMethods.Send Message    pm    ${slice_start_date}    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)
+    ...    0162052013000477    RTU0000000179571    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    Comment    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    Comment    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Comment    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    Comment    Log    Sending message with start date as Current Date + 89 days
+    Comment    ${slice_end_date}    DateTime.Convert Date    ${slice_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    Comment    ngcscCommonMethods.Send Message    pm    ${slice_end_date}    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    20s
+    Comment    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)
+    ...    0162052013000477    RTU0000000179571    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    Comment    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    Comment    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Comment    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZI000002    Installed At    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Not Contain Value    ${all_serial_records}    RTU0000000179571
+
+180 days
+    [Tags]    test
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    90 days
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch pst start slice time    ${slice_date}
+    ${slice_end_date}    DateTime.Add Time To Date    ${current_Date}    180 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_end_date}
+    ${eol_date_format}    DateTime.Add Time To Date    ${current_Date}    100 days
+    ${eol_date}    DateTime.Convert Date    ${eol_date_format}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    Comment    ${equipmentId}    Generate Random String    11    [NUMBERS]
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    pm    ${eol_date}    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    Comment    Log    Sending message with start date as Current Date + current date + 90 days
+    Comment    ${slice_start_date}    DateTime.Convert Date    ${slice_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    Comment    ngcscCommonMethods.Send Message    pm    ${slice_start_date}    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)
+    ...    0162052013000477    RTU0000000179571    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    Comment    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    Comment    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Comment    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    Comment    Log    Sending message with start date as Current Date + current date + 179 days
+    Comment    ${slice_end_date}    DateTime.Convert Date    ${slice_end_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    Comment    ngcscCommonMethods.Send Message    pm    ${slice_end_date}    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)
+    ...    0162052013000477    RTU0000000179571    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    Comment    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    Comment    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Comment    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZI000002    Installed At    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Not Contain Value    ${all_serial_records}    RTU0000000179571
+
+270 days
+    [Tags]    test
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    180 days
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch pst start slice time    ${slice_date}
+    ${slice_end_date}    DateTime.Add Time To Date    ${current_Date}    270 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_end_date}
+    ${eol_date}    DateTime.Add Time To Date    ${current_Date}    190 days
+    ${eol_date}    DateTime.Convert Date    ${eol_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    ${equipmentId}    Generate Random String    11    [NUMBERS]
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    pm    ${eol_date}    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    Comment    Log    Sending message with start date as Current Date + current date + 180 days
+    Comment    ${slice_start_date}    DateTime.Convert Date    ${slice_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    Comment    ngcscCommonMethods.Send Message    pm    ${slice_start_date}    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)
+    ...    0162052013000477    RTU0000000179571    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    Comment    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    Comment    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Comment    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    Comment    Log    Sending message with start date as Current Date + current date + 269 days
+    Comment    ${slice_end_date}    DateTime.Convert Date    ${slice_end_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    Comment    ngcscCommonMethods.Send Message    pm    ${slice_end_date}    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)
+    ...    0162052013000477    RTU0000000179571    ${msgRcdTs}
+    Comment    BuiltIn.Sleep    60s
+    Comment    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    Comment    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    Comment    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Comment    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZI000002    Installed At    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Not Contain Value    ${all_serial_records}    RTU0000000179571
+
+> 270 days
+    [Tags]    test
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    270 days
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch pst start slice time    ${slice_date}
+    ${slice_end_date}    DateTime.Add Time To Date    ${current_Date}    270 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_end_date}
+    ${eol_date}    DateTime.Add Time To Date    ${current_Date}    280 days
+    ${eol_date}    DateTime.Convert Date    ${eol_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    Comment    ${equipmentId}    Generate Random String    11    [NUMBERS]
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    pm    ${eol_date}    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZE000001    End User (IB End Customer)    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    17267414399000
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    17267414399000
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Contain Value    ${all_serial_records}    RTU0000000179571
+    ngcscCommonMethods.Send Message    ib    10019718008    ${Random Account ID}    ZI000002    Installed At    0162052013000477
+    ...    RTU0000000179571    ${msgRcdTs}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.API Request    50    ${start_time_pst_epoch}    17267414399000
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.API Request    ${total_records_output}    ${start_time_pst_epoch}    17267414399000
+    ${ibase_records}    Collections.Get From Dictionary    ${api_output_json}    ibaseList
+    ${all_serial_records}    Common.Getting serial Number from records    ${ibase_records}    serialNumber
+    Collections.List Should Not Contain Value    ${all_serial_records}    RTU0000000179571

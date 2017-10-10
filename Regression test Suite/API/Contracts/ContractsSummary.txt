@@ -1,0 +1,160 @@
+*** Settings ***
+Suite Setup       Common.Setup for Getting Random Account ID    contracts
+Library           ngcscCommonMethods
+Library           Collections
+Library           DateTime
+Library           String
+Resource          ../../Common.robot
+Resource          ../../Variables.txt
+
+*** Variables ***
+${Contracts API}    api/contract-manager/contracts
+
+*** Test Cases ***
+Expired
+    [Tags]    test
+    ${epoch_time_in_pst}    ngcscCommonMethods.epoch max time in pst
+    ${current_Date}    DateTime.Get Current Date
+    ${headerEndDate}    DateTime.Subtract Time From Date    ${current_Date}    10 days
+    ${headerEndDate}    DateTime.Convert Date    ${headerEndDate}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    ngcscCommonMethods.Send Message    contracts    ${headerEndDate}    ${msgRcdTs}    Expired    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    0060102233    ${header_start_date}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts Expired API    50
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.Contracts Expired API    ${total_records_output}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    0060102233
+
+90 days
+    [Documentation]    Verifying 90 slice day API
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch min time in pst
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    89 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_date}
+    ${header_end_date}    DateTime.Add Time To Date    ${current_Date}    10 days
+    ${header_end_date}    DateTime.Convert Date    ${header_end_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    ngcscCommonMethods.Send Message    contracts    ${header_end_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    ${header_start_date}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts 90 days    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.Contracts 90 days    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+    Log    Sending message with start date as Current Date
+    ${slice_start_date}    DateTime.Get Current Date
+    ${slice_start_date}    DateTime.Convert Date    ${slice_start_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ngcscCommonMethods.Send Message    contracts    ${slice_start_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    ${header_start_date}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts 90 days    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+    Log    Sending Message with slice filter enddate as headernenddate
+    ${slice_end_date}    DateTime.Convert Date    ${slice_date}    result_format=%Y%m%d%H%M    date_format=%Y-%m-%d %H:%M:%S.%f
+    ngcscCommonMethods.Send Message    contracts    ${slice_end_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts 90 days    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+
+180 days
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    90 days
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch pst start slice time    ${slice_date}
+    ${slice_end_date}    DateTime.Add Time To Date    ${current_Date}    179 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_end_date}
+    ${end_date}    DateTime.Add Time To Date    ${current_Date}    100 days
+    ${end_date}    DateTime.Convert Date    ${end_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    ngcscCommonMethods.Send Message    contracts    ${end_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    ${header_start_date}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts slice    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.Contracts slice    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+    Log    Sending message with slice start date as headerEnd date
+    ${slice_start_date}    DateTime.Convert Date    ${slice_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ngcscCommonMethods.Send Message    contracts    ${slice_start_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    ${header_start_date}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts slice    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+    Log    Sending message with slice filter end date as Header end date
+    ${slice_end_date}    DateTime.Convert Date    ${slice_end_date}    result_format=%Y%m%d%H%M    date_format=%Y-%m-%d %H:%M:%S.%f
+    ngcscCommonMethods.Send Message    contracts    ${slice_end_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts slice    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+
+270 days
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    180 days
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch pst start slice time    ${slice_date}
+    ${slice_end_date}    DateTime.Add Time To Date    ${current_Date}    270 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_end_date}
+    ${end_date}    DateTime.Add Time To Date    ${current_Date}    190 days
+    ${end_date}    DateTime.Convert Date    ${end_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    ngcscCommonMethods.Send Message    contracts    ${end_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    ${header_start_date}
+    BuiltIn.Sleep    100s
+    ${api_output_json}    Common.Contracts slice    50    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.Contracts slice    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+    Log    Sending message with start date as Current Date
+    ${slice_start_date}    DateTime.Convert Date    ${slice_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ngcscCommonMethods.Send Message    contracts    ${slice_start_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    ${header_start_date}
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts slice    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+    Log    Sending message with silce end date as header End date
+    ${slice_end_date}    DateTime.Convert Date    ${slice_end_date}    result_format=%Y%m%d%H%M    date_format=%Y-%m-%d %H:%M:%S.%f
+    ngcscCommonMethods.Send Message    contracts    ${slice_end_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller
+    BuiltIn.Sleep    60s
+    ${api_output_json}    Common.Contracts slice    ${total_records_output}    ${start_time_pst_epoch}    ${endDate_pst_epoch}
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
+
+> 270 days
+    ${current_Date}    ngcscCommonMethods.get currentdate pst
+    ${slice_date}    DateTime.Add Time To Date    ${current_Date}    270 days
+    ${start_time_pst_epoch}    ngcscCommonMethods.epoch pst start slice time    ${slice_date}
+    ${slice_end_date}    DateTime.Add Time To Date    ${current_Date}    270 days
+    ${endDate_pst_epoch}    ngcscCommonMethods.epoch pst end slice time    ${slice_end_date}
+    ${end_date}    DateTime.Add Time To Date    ${current_Date}    280 days
+    ${end_date}    DateTime.Convert Date    ${end_date}    result_format=%Y%m%d%H%M%S    date_format=%Y-%m-%d %H:%M:%S.%f
+    ${msgRcdTs}    ngcscCommonMethods.current date in epoch
+    ngcscCommonMethods.Send Message    contracts    ${end_date}    ${msgRcdTs}    Active    ${Random Account ID}    ZRE00001
+    ...    Primary Reseller    ${header_start_date}
+    BuiltIn.Sleep    100s
+    ${api_output_json}    Common.Contracts slice    50    ${start_time_pst_epoch}    17267414399000
+    ${total_records_output}    Collections.Get From Dictionary    ${api_output_json}    totalRecords
+    ${api_output_json}    Common.Contracts slice    ${total_records_output}    ${start_time_pst_epoch}    17267414399000
+    ${contract_records}    Collections.Get From Dictionary    ${api_output_json}    contractsList
+    ${all_contractId_records}    Common.Getting serial Number from records    ${contract_records}    contractId
+    Collections.List Should Contain Value    ${all_contractId_records}    ${Contract ID}
